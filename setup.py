@@ -23,6 +23,9 @@ import subprocess
 def getoutput(cmd_and_args):
     process = subprocess.Popen(cmd_and_args, stdout=subprocess.PIPE, universal_newlines=True)
     out, err = process.communicate()
+    retcode = process.poll()
+    if retcode:
+        raise subprocess.CalledProcessError(retcode, cmd_and_args[0], output=out)
     return out
 
 long_description = """
@@ -47,9 +50,11 @@ compile_args = getoutput("krb5-config --cflags gssapi".split()).split()
 setup (
     name = "kerberos-py23",
     # use the version from the PyKerberos project plus an additional nano-version that is used to track changes to this kerberos-py23 packages
+    url="https://github.com/may-day/kerberos-py23",
     version = "1.1.1.0",
     description = "Kerberos high-level interface",
     long_description=long_description,
+    license='Apache Software License 2.0',
     classifiers = [
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 2",
